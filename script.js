@@ -3,7 +3,13 @@
 // ============================================
 
 // DOM Elements
-const WORKER_url = "https://dash.cloudflare.com/c1e6ac290436ec97b201679215d78d96/workers/services/edit/loreal-chatbot-worker/production";
+const response = await fetch("https://loreal-chatbot-worker.jtut.workers.dev", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    messages: conversationHistory
+  })
+});
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
