@@ -20,104 +20,81 @@ const latestQuestionDisplay = document.getElementById("latestQuestion");
 // STATE VARIABLES
 // ============================================
 
-// Array to store conversation history - REQUIRED for conversation context
-// Each message has: role ("user" or "assistant") and content (the text)
 let conversationHistory = [];
 
-// API endpoint - YOUR ACTUAL CLOUDFLARE WORKER URL
+// YOUR CLOUDFLARE WORKER URL
 const CLOUDFLARE_WORKER_URL = "https://loreal-chatbot-worker.jtut.workers.dev";
 
-// Question count for optional challenge feature
 let questionCount = 0;
 
 // ============================================
 // INITIALIZATION
 // ============================================
 
-// Show welcome message when page loads
 function initializeChatbot() {
   const welcomeMessage =
     "👋 Hello! I'm your L'Oréal Beauty Advisor. Ask me about our products, skincare routines, or beauty tips. How can I help you today?";
   displayMessage(welcomeMessage, "assistant");
+  console.log("✅ Chatbot initialized");
+  console.log("🔗 Worker URL:", CLOUDFLARE_WORKER_URL);
 }
 
-// Initialize on page load
 initializeChatbot();
 
 // ============================================
 // FORM SUBMISSION - MAIN CHAT FUNCTIONALITY
 // ============================================
 
-// Listen for form submission when user sends a message
 chatForm.addEventListener("submit", async (e) => {
-  e.preventDefault(); // Prevent page reload
+  e.preventDefault();
 
-  // Get user's message from input field
   const userMessage = userInput.value.trim();
 
-  // Don't send empty messages
   if (!userMessage) return;
 
-  // Display the user's latest question in the highlighted section
   displayLatestQuestion(userMessage);
-
-  // Display user message as bubble
   displayMessage(userMessage, "user");
 
-  // Clear input field for next message
   userInput.value = "";
   userInput.focus();
 
-  // Add user message to conversation history
   conversationHistory.push({
     role: "user",
     content: userMessage,
   });
 
-  // Disable send button while waiting for response
   sendBtn.disabled = true;
   sendBtn.style.opacity = "0.6";
 
-  // Show thinking animation
   showTypingIndicator();
 
   try {
-    // Send message to Cloudflare Worker and get response
+    console.log("🚀 Sending message to Worker...");
     const assistantResponse = await sendMessageToOpenAI(userMessage);
 
-    // Remove typing indicator
     removeTypingIndicator();
 
-    // Display assistant's response as bubble
     displayMessage(assistantResponse, "assistant");
 
-    // Add assistant's response to conversation history
     conversationHistory.push({
       role: "assistant",
       content: assistantResponse,
     });
 
-    // Increment question count for optional challenge
     questionCount++;
 
-    // Optional: Show challenge progress
     if (questionCount === 3) {
       showChallengeUnlock();
     }
   } catch (error) {
-    // Remove typing indicator
     removeTypingIndicator();
 
-    // Show error message to user
-    const errorMessage =
-      "❌ Sorry, I couldn't get a response. Please check your Cloudflare Worker URL and API key. Error: " +
-      error.message;
+    const errorMessage = `❌ Error: ${error.message}`;
     displayMessage(errorMessage, "assistant");
 
-    console.error("Error communicating with API:", error);
+    console.error("❌ Chat error:", error);
   }
 
-  // Re-enable send button
   sendBtn.disabled = false;
   sendBtn.style.opacity = "1";
 });
@@ -126,25 +103,26 @@ chatForm.addEventListener("submit", async (e) => {
 // SEND MESSAGE TO CLOUDFLARE WORKER
 // ============================================
 
-// This function sends the entire conversation history to OpenAI via Cloudflare Worker
 async function sendMessageToOpenAI(userMessage) {
-  // Create system prompt for context
   const systemMessage = {
     role: "system",
     content:
       "You are a helpful L'Oréal beauty expert. Provide personalized recommendations about skincare, makeup, haircare, and beauty routines. Be friendly and enthusiastic about our products.",
   };
 
-  // Build the messages array with system prompt and full conversation history
   const messages = [systemMessage, ...conversationHistory];
 
-  // Prepare the request body
   const requestBody = {
     messages: messages,
   };
 
   try {
-    // Send POST request to Cloudflare Worker
+    console.log("📤 Fetch details:");
+    console.log("   URL:", CLOUDFLARE_WORKER_URL);
+    console.log("   Method: POST");
+    console.log("   Headers: Content-Type: application/json");
+    console.log("   Body messages count:", messages.length);
+
     const response = await fetch(CLOUDFLARE_WORKER_URL, {
       method: "POST",
       headers: {
@@ -153,32 +131,61 @@ async function sendMessageToOpenAI(userMessage) {
       body: JSON.stringify(requestBody),
     });
 
-    // Check if response is successful
+    console.log("✅ Got response from Worker");
+    console.log("   Status:", response.status, response.statusText);
+
     if (!response.ok) {
+      let errorText = "";
+      try {
+        errorText = await response.text();
+      } catch (e) {
+        errorText = "Could not read response";
+      }
+      console.error("❌ Worker error:", errorText);
       throw new Error(
-        `API returned status ${response.status}: ${response.statusText}`,
+        `Worker error ${response.status}: ${errorText}`
       );
     }
 
-    // Parse the JSON response
     let data;
     try {
       data = await response.json();
+      console.log("📥 Parsed response:", data);
     } catch (parseError) {
-      console.error("Failed to parse response:", parseError);
-      throw new Error("Received invalid JSON from Worker");
+      console.error("❌ JSON parse error:", parseError);
+      const responseText = await response.text();
+      console.error("Response text was:", responseText);
+      throw new Error("Worker returned invalid JSON");
     }
 
-    // Extract the assistant's message from the response
-    // The Worker now returns: { reply: "message text" }
     if (!data.reply) {
-      console.error("Unexpected response format:", data);
-      throw new Error("Worker did not return a reply field");
+      console.error("❌ No reply in response:", data);
+      
+      // Check if it has choices (old format)
+      if (data.choices && data.choices[0]?.message?.content) {
+        console.log("⚠️ Found old response format, extracting message...");
+        return data.choices[0].message.content;
+      }
+      
+      throw new Error("Worker did not include a reply in response");
     }
 
+    console.log("✅ Successfully got reply from Worker!");
     return data.reply;
+
   } catch (error) {
-    console.error("sendMessageToOpenAI error:", error);
+    console.error("❌ Fetch error:", error);
+
+    // Better error messages for debugging
+    if (error.message.includes("Failed to fetch")) {
+      console.error("🔍 DEBUGGING FAILED TO FETCH:");
+      console.error("   1. Check Worker URL is correct:", CLOUDFLARE_WORKER_URL);
+      console.error("   2. Check Worker is deployed in Cloudflare");
+      console.error("   3. Check browser console for CORS errors (read below)");
+      console.error("   4. Try opening Worker URL directly in browser to test");
+      throw new Error("Cannot connect to Worker. Check console for debugging info.");
+    }
+
     throw error;
   }
 }
@@ -187,40 +194,31 @@ async function sendMessageToOpenAI(userMessage) {
 // DISPLAY FUNCTIONS
 // ============================================
 
-// Display a message bubble in the chat window
 function displayMessage(message, role) {
-  // Create a container for the message
   const messageContainer = document.createElement("div");
   messageContainer.classList.add("message-container", role);
 
-  // Create the message bubble
   const messageBubble = document.createElement("div");
   messageBubble.classList.add("message-bubble", role);
   messageBubble.textContent = message;
 
-  // Create timestamp
   const timestamp = document.createElement("div");
   timestamp.classList.add("message-time");
   timestamp.textContent = getCurrentTime();
 
-  // Add bubble and timestamp to container
   messageContainer.appendChild(messageBubble);
   messageContainer.appendChild(timestamp);
 
-  // Add message container to chat window
   chatWindow.appendChild(messageContainer);
 
-  // Scroll to bottom to show latest message
   scrollToBottom();
 }
 
-// Display the latest user question in the highlighted section
 function displayLatestQuestion(question) {
   latestQuestionDisplay.textContent = question;
   latestQuestionSection.style.display = "block";
 }
 
-// Get current time in HH:MM format
 function getCurrentTime() {
   const now = new Date();
   const hours = String(now.getHours()).padStart(2, "0");
@@ -228,7 +226,6 @@ function getCurrentTime() {
   return `${hours}:${minutes}`;
 }
 
-// Show "typing" animation while waiting for response
 function showTypingIndicator() {
   const typingContainer = document.createElement("div");
   typingContainer.classList.add("message-container", "assistant");
@@ -244,7 +241,6 @@ function showTypingIndicator() {
   scrollToBottom();
 }
 
-// Remove typing indicator
 function removeTypingIndicator() {
   const typingIndicator = document.getElementById("typingIndicator");
   if (typingIndicator) {
@@ -252,7 +248,6 @@ function removeTypingIndicator() {
   }
 }
 
-// Automatically scroll chat window to bottom
 function scrollToBottom() {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
@@ -261,25 +256,24 @@ function scrollToBottom() {
 // ACTION BUTTONS
 // ============================================
 
-// Reset Chat - Clears messages but keeps history
 resetBtn.addEventListener("click", () => {
   chatWindow.innerHTML = "";
   initializeChatbot();
   latestQuestionSection.style.display = "none";
   questionCount = 0;
+  console.log("🔄 Chat reset");
 });
 
-// Clear Chat History - Clears everything including conversation array
 clearBtn.addEventListener("click", () => {
   conversationHistory = [];
   chatWindow.innerHTML = "";
   initializeChatbot();
   latestQuestionSection.style.display = "none";
   questionCount = 0;
-  alert("Chat history cleared! Starting fresh. 🗑️");
+  alert("✅ Chat history cleared!");
+  console.log("🗑️ History cleared");
 });
 
-// Help Button - Shows instructions
 helpBtn.addEventListener("click", () => {
   const helpMessage = `
 ❓ HELP & TIPS
@@ -308,47 +302,11 @@ Good luck exploring L'Oréal beauty! ✨
   displayMessage(helpMessage, "assistant");
 });
 
-// ============================================
-// OPTIONAL CHALLENGE FEATURE
-// ============================================
-
-// Show challenge unlock message after 3 questions
 function showChallengeUnlock() {
   const challengeMessage =
     "🎉 Congratulations! You've unlocked a special tip: L'Oréal's #1 bestselling skincare line combines science with luxury. Check out our Revitalift collection! ✨";
   displayMessage(challengeMessage, "assistant");
 }
 
-// ============================================
-// NOTES FOR STUDENTS
-// ============================================
-
-/*
-KEY CONCEPTS EXPLAINED:
-------------------------
-
-1. CONVERSATION HISTORY ARRAY:
-   - We store each message as an object: { role: "user" | "assistant", content: "text" }
-   - We send the FULL history to OpenAI each time
-   - OpenAI uses this to understand context
-
-2. async/await:
-   - We use async/await to wait for the API response
-   - This prevents the UI from freezing while waiting
-
-3. DOM MANIPULATION:
-   - We create elements with createElement()
-   - We add classes with classList.add()
-   - We append elements with appendChild()
-
-4. ERROR HANDLING:
-   - We use try/catch to handle API errors
-   - We show user-friendly error messages
-
-5. CLOUDFLARE WORKER:
-   - Our Worker handles API authentication
-   - It keeps our API key secret (not exposed to browser)
-   - It relays requests to OpenAI
-
-TODO: Replace CLOUDFLARE_WORKER_URL with your actual Worker URL!
-*/
+console.log("✅ Script.js loaded successfully!");
+console.log("📝 Check console here for debugging messages when you send a message");
