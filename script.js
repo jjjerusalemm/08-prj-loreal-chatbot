@@ -23,7 +23,7 @@ const latestQuestionDisplay = document.getElementById("latestQuestion");
 let conversationHistory = [];
 
 // YOUR CLOUDFLARE WORKER URL
-const CLOUDFLARE_WORKER_URL = "https://loreal-chatbot-worker.jtut.workers.dev";
+const CLOUDFLARE_WORKER_URL = "https://loreal-chatbot-worker.jtut.workers.dev/";
 
 let questionCount = 0;
 
@@ -142,9 +142,7 @@ async function sendMessageToOpenAI(userMessage) {
         errorText = "Could not read response";
       }
       console.error("❌ Worker error:", errorText);
-      throw new Error(
-        `Worker error ${response.status}: ${errorText}`
-      );
+      throw new Error(`Worker error ${response.status}: ${errorText}`);
     }
 
     let data;
@@ -160,30 +158,34 @@ async function sendMessageToOpenAI(userMessage) {
 
     if (!data.reply) {
       console.error("❌ No reply in response:", data);
-      
+
       // Check if it has choices (old format)
       if (data.choices && data.choices[0]?.message?.content) {
         console.log("⚠️ Found old response format, extracting message...");
         return data.choices[0].message.content;
       }
-      
+
       throw new Error("Worker did not include a reply in response");
     }
 
     console.log("✅ Successfully got reply from Worker!");
     return data.reply;
-
   } catch (error) {
     console.error("❌ Fetch error:", error);
 
     // Better error messages for debugging
     if (error.message.includes("Failed to fetch")) {
       console.error("🔍 DEBUGGING FAILED TO FETCH:");
-      console.error("   1. Check Worker URL is correct:", CLOUDFLARE_WORKER_URL);
+      console.error(
+        "   1. Check Worker URL is correct:",
+        CLOUDFLARE_WORKER_URL,
+      );
       console.error("   2. Check Worker is deployed in Cloudflare");
       console.error("   3. Check browser console for CORS errors (read below)");
       console.error("   4. Try opening Worker URL directly in browser to test");
-      throw new Error("Cannot connect to Worker. Check console for debugging info.");
+      throw new Error(
+        "Cannot connect to Worker. Check console for debugging info.",
+      );
     }
 
     throw error;
@@ -309,4 +311,6 @@ function showChallengeUnlock() {
 }
 
 console.log("✅ Script.js loaded successfully!");
-console.log("📝 Check console here for debugging messages when you send a message");
+console.log(
+  "📝 Check console here for debugging messages when you send a message",
+);
