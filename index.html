@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat Assistant</title>
+    <title>L'Oréal Beauty Advisor</title>
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -19,48 +19,91 @@
     <div class="page-wrapper">
       <!------- Header / Branding ------->
       <header class="site-header">
-        <h1 class="site-title">Smart Product Advisor</h1>
+        <!-- L'Oréal branding -->
+        <div class="logo-container">
+          <h1 class="site-title">✨ L'Oréal Beauty Advisor</h1>
+          <p class="tagline">Your Personal Beauty Expert</p>
+        </div>
+
+        <!-- User name input -->
+        <div class="user-info-section">
+          <input
+            id="userName"
+            type="text"
+            placeholder="Enter your name (optional)"
+            class="user-name-input"
+            autocomplete="off"
+          />
+        </div>
       </header>
 
-      <!------- Chat Area ------->
-      <main>
+      <!------- Main Chat Area ------->
+      <main class="main-content">
+        <!-- Display latest question ------->
+        <section
+          id="latestQuestionSection"
+          class="latest-question-section"
+          style="display: none"
+        >
+          <div class="latest-question-box">
+            <strong>Your Question:</strong>
+            <p id="latestQuestion"></p>
+          </div>
+        </section>
+
+        <!-- Chat messages area ------->
         <section class="chatbox">
           <div id="chatWindow" class="chat-window">
-            <!-- messages will be appended here via JS -->
+            <!-- Welcome message will appear here -->
           </div>
 
+          <!-- Input form ------->
           <form id="chatForm" class="chat-form">
             <label for="userInput" class="visually-hidden">Message</label>
             <input
               id="userInput"
               name="userInput"
               type="text"
-              placeholder="Ask me about products or routines…"
+              placeholder="Ask me about products, routines, or beauty tips…"
               autocomplete="off"
               required
             />
-            <button type="submit" id="sendBtn">
+            <button type="submit" id="sendBtn" class="send-btn">
               <span class="material-icons">send</span>
               <span class="visually-hidden">Send</span>
             </button>
           </form>
         </section>
+
+        <!-- Action buttons ------->
+        <div class="action-buttons">
+          <button id="resetBtn" class="action-btn reset-btn">
+            <span class="material-icons">refresh</span>
+            Reset Chat
+          </button>
+          <button id="clearBtn" class="action-btn clear-btn">
+            <span class="material-icons">delete_sweep</span>
+            Clear History
+          </button>
+          <button id="helpBtn" class="action-btn help-btn">
+            <span class="material-icons">help_outline</span>
+            Help
+          </button>
+        </div>
       </main>
 
-      <!------- Footer Links ------->
+      <!------- Footer ------->
       <footer class="site-footer">
-        <p>&copy; 2025 Company Name. All rights reserved.</p>
+        <p>&copy; 2025 L'Oréal Paris. All rights reserved.</p>
         <nav>
-          <!-- These URLs are placeholders -->
           <a href="#">Privacy Policy</a>
           <a href="#">Terms of Use</a>
-          <a href="#">Contact</a>
+          <a href="#">Contact Us</a>
         </nav>
       </footer>
     </div>
 
-    <!-- secrets.js can be removed when using Cloudflare Workers for API requests -->
-    <script src="secrets.js"></script>
+    <!-- Link to JavaScript file -->
     <script src="script.js"></script>
   </body>
 </html>
