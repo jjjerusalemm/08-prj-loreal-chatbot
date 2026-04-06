@@ -1,0 +1,216 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Worker Test</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+        max-width: 800px;
+      }
+      pre {
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+      .success {
+        color: green;
+        font-weight: bold;
+      }
+      .error {
+        color: red;
+        font-weight: bold;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔧 L'Oréal Chatbot Worker Diagnostic</h1>
+
+    <h2>Test 1: Is Worker Accessible?</h2>
+    <button onclick="testWorkerURL()">Test Worker URL</button>
+    <pre id="test1-result">Click button above...</pre>
+
+    <h2>Test 2: Send Hello Message</h2>
+    <button onclick="testHelloMessage()">Send Test Message</button>
+    <pre id="test2-result">Click button above...</pre>
+
+    <h2>Test 3: Full Diagnostic</h2>
+    <button onclick="fullDiagnostic()">Run Full Diagnostic</button>
+    <pre id="test3-result">Click button above...</pre>
+
+    <hr />
+
+    <h2>📋 What to do:</h2>
+    <ol>
+      <li>Click each button in order</li>
+      <li>Copy the results below</li>
+      <li>Share with me what each test says</li>
+    </ol>
+
+    <script>
+      const WORKER_URL = "https://loreal-chatbot-worker.jtut.workers.dev";
+
+      function log(elementId, text) {
+        document.getElementById(elementId).textContent += text + "\n";
+      }
+
+      function clear(elementId) {
+        document.getElementById(elementId).textContent = "";
+      }
+
+      // Test 1: Simple OPTIONS request
+      async function testWorkerURL() {
+        clear("test1-result");
+        log("test1-result", "🔍 Testing if Worker is accessible...\n");
+
+        try {
+          const response = await fetch(WORKER_URL, {
+            method: "OPTIONS",
+          });
+
+          log(
+            "test1-result",
+            `Status: ${response.status} ${response.statusText}\n`,
+          );
+
+          if (response.ok) {
+            log("test1-result", "✅ SUCCESS: Worker is accessible!\n");
+            log("test1-result", "Response headers show CORS is working.\n");
+          } else {
+            log(
+              "test1-result",
+              "⚠️ Worker responded but with status " + response.status + "\n",
+            );
+          }
+        } catch (error) {
+          log("test1-result", `❌ FAILED: ${error.message}\n`);
+          log("test1-result", "Worker is NOT accessible. Check:\n");
+          log("test1-result", "1. Worker URL is correct\n");
+          log("test1-result", "2. Worker is deployed in Cloudflare\n");
+          log("test1-result", "3. Your internet connection\n");
+        }
+      }
+
+      // Test 2: Send empty message
+      async function testHelloMessage() {
+        clear("test2-result");
+        log("test2-result", "🚀 Sending test message to Worker...\n");
+
+        const testPayload = {
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful assistant.",
+            },
+            {
+              role: "user",
+              content: "Say hello",
+            },
+          ],
+        };
+
+        try {
+          log("test2-result", "📤 POST Request to:\n");
+          log("test2-result", WORKER_URL + "\n\n");
+
+          const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(testPayload),
+          });
+
+          log("test2-result", `📥 Response Status: ${response.status}\n`);
+
+          const data = await response.json();
+          log("test2-result", `Response:\n${JSON.stringify(data, null, 2)}\n`);
+
+          if (data.reply) {
+            log("test2-result", "✅ SUCCESS: Worker returned a reply!\n");
+            log("test2-result", `Reply: "${data.reply}"\n`);
+          } else if (data.error) {
+            log("test2-result", `⚠️ Worker error: ${data.error}\n`);
+          } else {
+            log("test2-result", "❌ Unexpected response format\n");
+          }
+        } catch (error) {
+          log("test2-result", `❌ FAILED: ${error.message}\n`);
+          log(
+            "test2-result",
+            "This means the Worker is not responding to POST requests.\n",
+          );
+        }
+      }
+
+      // Test 3: Full diagnostic
+      async function fullDiagnostic() {
+        clear("test3-result");
+
+        log("test3-result", "🔍 FULL DIAGNOSTIC REPORT\n");
+        log("test3-result", "========================\n\n");
+
+        log("test3-result", "1️⃣ WORKER URL:\n");
+        log("test3-result", WORKER_URL + "\n\n");
+
+        log("test3-result", "2️⃣ TESTING WORKER...\n");
+
+        try {
+          const response = await fetch(WORKER_URL);
+          log(
+            "test3-result",
+            `✅ Worker is accessible (status: ${response.status})\n\n`,
+          );
+        } catch (error) {
+          log("test3-result", `❌ Cannot reach Worker: ${error.message}\n\n`);
+          log("test3-result", "FIX: Redeploy Worker in Cloudflare\n\n");
+        }
+
+        log("test3-result", "3️⃣ TESTING API KEY...\n");
+
+        try {
+          const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              messages: [{ role: "user", content: "test" }],
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.error && data.error.includes("API key")) {
+            log("test3-result", `⚠️ API key issue: ${data.error}\n`);
+            log(
+              "test3-result",
+              "FIX: Add OPENAI_API_KEY to Cloudflare Worker Settings\n\n",
+            );
+          } else if (data.error) {
+            log("test3-result", `⚠️ Other error: ${data.error}\n\n`);
+          } else if (data.reply) {
+            log("test3-result", `✅ API key is working!\n`);
+            log(
+              "test3-result",
+              `Worker replied: "${data.reply.substring(0, 50)}..."\n\n`,
+            );
+          }
+        } catch (error) {
+          log("test3-result", `❌ Network error: ${error.message}\n\n`);
+        }
+
+        log("test3-result", "========================\n");
+        log("test3-result", "🎯 SUMMARY:\n");
+        log("test3-result", "If all tests passed: Your chatbot should work!\n");
+        log("test3-result", "If API key test failed: Add key to Cloudflare\n");
+        log("test3-result", "If Worker test failed: Redeploy in Cloudflare\n");
+      }
+    </script>
+  </body>
+</html>
