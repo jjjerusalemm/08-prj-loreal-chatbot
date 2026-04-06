@@ -2,14 +2,9 @@
 // L'ORÉAL BEAUTY CHATBOT - JAVASCRIPT
 // ============================================
 
-// DOM Elements
-const response = await fetch("https://loreal-chatbot-worker.jtut.workers.dev", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    messages: conversationHistory
-  })
-});
+// ============================================
+// DOM ELEMENTS
+// ============================================
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
@@ -29,8 +24,8 @@ const latestQuestionDisplay = document.getElementById("latestQuestion");
 // Each message has: role ("user" or "assistant") and content (the text)
 let conversationHistory = [];
 
-// API endpoint - Replace with YOUR Cloudflare Worker URL
-const CLOUDFLARE_WORKER_URL = "https://your-worker.your-subdomain.workers.dev";
+// API endpoint - YOUR ACTUAL CLOUDFLARE WORKER URL
+const CLOUDFLARE_WORKER_URL = "https://loreal-chatbot-worker.jtut.workers.dev";
 
 // Question count for optional challenge feature
 let questionCount = 0;
@@ -140,12 +135,6 @@ async function sendMessageToOpenAI(userMessage) {
       "You are a helpful L'Oréal beauty expert. Provide personalized recommendations about skincare, makeup, haircare, and beauty routines. Be friendly and enthusiastic about our products.",
   };
 
-  // Include user name in context if provided
-  let userContext = userMessage;
-  if (userName.value.trim()) {
-    userContext = `${userName.value}: ${userMessage}`;
-  }
-
   // Build the messages array with system prompt and full conversation history
   const messages = [systemMessage, ...conversationHistory];
 
@@ -154,28 +143,44 @@ async function sendMessageToOpenAI(userMessage) {
     messages: messages,
   };
 
-  // Send POST request to Cloudflare Worker
-  const response = await fetch(CLOUDFLARE_WORKER_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
+  try {
+    // Send POST request to Cloudflare Worker
+    const response = await fetch(CLOUDFLARE_WORKER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-  // Check if response is successful
-  if (!response.ok) {
-    throw new Error(`API returned status ${response.status}`);
+    // Check if response is successful
+    if (!response.ok) {
+      throw new Error(
+        `API returned status ${response.status}: ${response.statusText}`,
+      );
+    }
+
+    // Parse the JSON response
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      console.error("Failed to parse response:", parseError);
+      throw new Error("Received invalid JSON from Worker");
+    }
+
+    // Extract the assistant's message from the response
+    // The Worker now returns: { reply: "message text" }
+    if (!data.reply) {
+      console.error("Unexpected response format:", data);
+      throw new Error("Worker did not return a reply field");
+    }
+
+    return data.reply;
+  } catch (error) {
+    console.error("sendMessageToOpenAI error:", error);
+    throw error;
   }
-
-  // Parse the JSON response
-  const data = await response.json();
-
-  // Extract the assistant's message from the response
-  // This matches the structure from OpenAI API: data.choices[0].message.content
-  const assistantMessage = data.choices[0].message.content;
-
-  return assistantMessage;
 }
 
 // ============================================
