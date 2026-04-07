@@ -272,7 +272,9 @@ clearBtn.addEventListener("click", () => {
   initializeChatbot();
   latestQuestionSection.style.display = "none";
   questionCount = 0;
-  alert("Conversation history has been cleared. Ready for a fresh consultation.");
+  alert(
+    "Conversation history has been cleared. Ready for a fresh consultation.",
+  );
   console.log("🗑️ History cleared");
 });
 
