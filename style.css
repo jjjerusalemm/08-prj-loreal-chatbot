@@ -5,178 +5,182 @@
   padding: 0;
 }
 
-/* —— L'ORÉAL BRAND COLOR PALETTE —— */
+/* —— L'ORÉAL LUXURY BRAND PALETTE —— */
 :root {
-  /* Primary Colors */
+  /* Primary Luxury Colors */
   --loreal-black: #000000;
   --loreal-white: #ffffff;
-  --loreal-red: #ed1c24;
+  --loreal-gold: #c9a96e;
   
-  /* Secondary Colors */
-  --loreal-red-dark: #c8102e;
-  --loreal-gray-light: #f5f5f5;
-  --loreal-gray-medium: #e0e0e0;
+  /* Neutral Tones */
+  --loreal-nude: #f5f0e8;
+  --loreal-beige: #ede6d6;
+  --loreal-gray-light: #f8f6f3;
+  --loreal-gray-medium: #e8e3dd;
+  --loreal-gray-dark: #6b635a;
   
-  /* Background Colors */
-  --loreal-bg-primary: #ffffff;
-  --loreal-bg-secondary: #fafafa;
-  --loreal-bg-accent: #f8f8f8;
-  
-  /* Text Colors */
-  --loreal-text-primary: #000000;
-  --loreal-text-secondary: #666666;
-  --loreal-text-light: #999999;
+  /* Subtle Accents */
+  --loreal-gold-soft: #d4c4a8;
+  --loreal-shadow: rgba(0, 0, 0, 0.04);
+  --loreal-border: rgba(0, 0, 0, 0.06);
 }
 
-/* —— L'ORÉAL TYPOGRAPHY —— */
-/* Primary: Helvetica (sans-serif for clean, modern look) */
-/* Secondary: Times New Roman (serif for elegance) */
-/* Accent: Script font for special elements */
+/* —— LUXURY TYPOGRAPHY —— */
+/* Headings: Playfair Display (elegant serif) */
+/* Body: Inter/Helvetica Neue (clean sans-serif) */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
 
 body {
-  font-family: "Helvetica", "Arial", sans-serif;
-  color: var(--loreal-text-primary);
-  background: linear-gradient(135deg, var(--loreal-bg-secondary) 0%, var(--loreal-bg-primary) 100%);
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  color: var(--loreal-black);
+  background: linear-gradient(135deg, var(--loreal-white) 0%, var(--loreal-gray-light) 100%);
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding: 24px;
-  line-height: 1.6;
+  padding: 32px 24px;
+  line-height: 1.7;
+  letter-spacing: 0.2px;
 }
 
 .page-wrapper {
   width: 100%;
-  max-width: 880px;
+  max-width: 900px;
 }
 
-/* —— HEADER / L'ORÉAL BRANDING —— */
+/* —— HEADER / L'ORÉAL LUXURY BRANDING —— */
 .site-header {
   text-align: center;
-  padding: 36px 28px;
+  padding: 48px 40px;
   background: var(--loreal-white);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  margin-bottom: 28px;
-  border: 1px solid var(--loreal-gray-medium);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px var(--loreal-shadow);
+  margin-bottom: 40px;
+  border: 1px solid var(--loreal-border);
 }
 
 .logo-container {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .site-title {
-  font-family: "Times New Roman", serif;
-  font-size: 36px;
-  font-weight: normal;
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  font-weight: 500;
   color: var(--loreal-black);
-  margin-bottom: 10px;
-  letter-spacing: -1px;
-  text-transform: uppercase;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .site-title .loreal-o {
-  color: var(--loreal-red);
+  color: var(--loreal-gold);
   font-style: italic;
+  font-weight: 600;
 }
 
 .tagline {
-  font-family: "Helvetica", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 16px;
-  color: var(--loreal-text-secondary);
+  color: var(--loreal-gray-dark);
   font-weight: 300;
   letter-spacing: 1px;
   text-transform: uppercase;
+  opacity: 0.8;
 }
 
 /* User name input */
 .user-info-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid var(--loreal-gray-medium);
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--loreal-border);
 }
 
 .user-name-input {
-  padding: 14px 18px;
-  border: 1px solid var(--loreal-gray-medium);
-  border-radius: 8px;
+  padding: 16px 20px;
+  border: 1px solid var(--loreal-border);
+  border-radius: 12px;
   font-size: 15px;
-  font-family: "Helvetica", sans-serif;
+  font-family: 'Inter', sans-serif;
   width: 100%;
-  max-width: 340px;
+  max-width: 360px;
   background: var(--loreal-white);
-  color: var(--loreal-text-primary);
-  transition: all 0.25s ease;
+  color: var(--loreal-black);
+  transition: all 0.3s ease;
 }
 
 .user-name-input:focus {
   outline: none;
-  border-color: var(--loreal-red);
+  border-color: var(--loreal-gold);
   background: var(--loreal-white);
-  box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.08);
 }
 
 /* —— MAIN CONTENT —— */
 .main-content {
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 32px;
 }
 
 /* Latest Question Display */
 .latest-question-section {
-  animation: slideDown 0.4s ease-out;
+  animation: slideDown 0.5s ease-out;
 }
 
 .latest-question-box {
-  background: linear-gradient(135deg, var(--loreal-red) 0%, var(--loreal-red-dark) 100%);
-  color: var(--loreal-white);
-  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--loreal-nude) 0%, var(--loreal-beige) 100%);
+  color: var(--loreal-black);
+  padding: 24px 28px;
   border-radius: 16px;
   font-size: 16px;
-  box-shadow: 0 12px 32px rgba(237, 28, 36, 0.15);
-  font-family: "Helvetica", sans-serif;
+  box-shadow: 0 4px 20px var(--loreal-shadow);
+  border: 1px solid var(--loreal-border);
+  font-family: 'Inter', sans-serif;
 }
 
 .latest-question-box strong {
   display: block;
   font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-  opacity: 0.95;
-  font-weight: 300;
+  letter-spacing: 1.2px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+  font-weight: 500;
+  color: var(--loreal-gray-dark);
 }
 
 .latest-question-box p {
   font-size: 16px;
   line-height: 1.6;
   font-weight: 400;
+  margin: 0;
 }
 
 /* —— CHATBOX STYLING —— */
 .chatbox {
   background: var(--loreal-white);
-  border-radius: 24px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px var(--loreal-shadow);
   display: flex;
   flex-direction: column;
-  height: 560px;
+  height: 580px;
   overflow: hidden;
-  border: 1px solid var(--loreal-gray-medium);
+  border: 1px solid var(--loreal-border);
 }
 
 .chat-window {
   flex: 1;
   overflow-y: auto;
-  padding: 32px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  background: var(--loreal-bg-accent);
+  gap: 20px;
+  background: var(--loreal-gray-light);
 }
 
 .chat-window::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .chat-window::-webkit-scrollbar-track {
@@ -184,19 +188,19 @@ body {
 }
 
 .chat-window::-webkit-scrollbar-thumb {
-  background: var(--loreal-red);
-  border-radius: 3px;
+  background: var(--loreal-gold);
+  border-radius: 2px;
 }
 
 .chat-window::-webkit-scrollbar-thumb:hover {
-  background: var(--loreal-red-dark);
+  background: var(--loreal-gold-soft);
 }
 
 /* —— MESSAGE BUBBLES —— */
 .message-container {
   display: flex;
-  margin-bottom: 6px;
-  animation: fadeIn 0.3s ease-in;
+  margin-bottom: 4px;
+  animation: fadeIn 0.4s ease-in;
 }
 
 .message-container.user {
@@ -208,83 +212,86 @@ body {
 }
 
 .message-bubble {
-  max-width: 75%;
-  padding: 18px 22px;
-  border-radius: 20px;
+  max-width: 70%;
+  padding: 20px 24px;
+  border-radius: 16px;
   word-wrap: break-word;
   font-size: 15px;
   line-height: 1.6;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px var(--loreal-shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  font-family: "Helvetica", sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
 }
 
 .message-bubble:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px var(--loreal-shadow);
 }
 
 .message-bubble.user {
-  background: var(--loreal-red);
-  color: var(--loreal-white);
-  border-bottom-right-radius: 6px;
-  font-weight: 400;
+  background: var(--loreal-nude);
+  color: var(--loreal-black);
+  border-bottom-right-radius: 4px;
+  border: 1px solid var(--loreal-gray-medium);
 }
 
 .message-bubble.assistant {
   background: var(--loreal-white);
-  color: var(--loreal-text-primary);
-  border: 1px solid var(--loreal-gray-medium);
-  border-bottom-left-radius: 6px;
+  color: var(--loreal-black);
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--loreal-border);
 }
 
 .message-time {
   font-size: 11px;
   margin-top: 8px;
-  opacity: 0.7;
+  opacity: 0.6;
   padding: 0 4px;
-  font-family: "Helvetica", sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  color: var(--loreal-gray-dark);
 }
 
 .message-container.user .message-time {
   text-align: right;
-  color: rgba(255, 255, 255, 0.8);
 }
 
 .message-container.assistant .message-time {
-  color: var(--loreal-text-light);
+  text-align: left;
 }
 
 /* —— CHAT FORM / INPUT —— */
 .chat-form {
   display: flex;
   gap: 16px;
-  padding: 22px;
-  background: rgba(255, 255, 255, 0.98);
-  border-top: 1px solid var(--loreal-gray-medium);
+  padding: 24px 40px;
+  background: var(--loreal-white);
+  border-top: 1px solid var(--loreal-border);
 }
 
 .chat-form input {
   flex: 1;
   padding: 16px 20px;
-  border: 1px solid var(--loreal-gray-medium);
-  border-radius: 28px;
+  border: 1px solid var(--loreal-border);
+  border-radius: 24px;
   font-size: 15px;
-  font-family: "Helvetica", sans-serif;
-  background: var(--loreal-bg-accent);
-  color: var(--loreal-text-primary);
-  transition: all 0.25s ease;
+  font-family: 'Inter', sans-serif;
+  background: var(--loreal-gray-light);
+  color: var(--loreal-black);
+  transition: all 0.3s ease;
 }
 
 .chat-form input::placeholder {
-  color: var(--loreal-text-light);
+  color: var(--loreal-gray-dark);
+  opacity: 0.7;
 }
 
 .chat-form input:focus {
   outline: none;
-  border-color: var(--loreal-red);
+  border-color: var(--loreal-gold);
   background: var(--loreal-white);
-  box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.08);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.06);
 }
 
 .send-btn {
@@ -293,34 +300,35 @@ body {
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: var(--loreal-red);
+  background: var(--loreal-black);
   color: var(--loreal-white);
-  font-size: 22px;
+  font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
   flex-shrink: 0;
-  box-shadow: 0 8px 20px rgba(237, 28, 36, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .send-btn:hover {
-  background: var(--loreal-red-dark);
-  transform: scale(1.05);
+  background: var(--loreal-gold);
+  color: var(--loreal-black);
+  transform: scale(1.02);
 }
 
 .send-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
 }
 
 .send-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.3);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
 }
 
 .send-btn .material-icons {
-  font-size: 26px;
+  font-size: 24px;
 }
 
 /* —— ACTION BUTTONS —— */
@@ -329,36 +337,36 @@ body {
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 16px 0 10px;
+  padding: 20px 0 12px;
 }
 
 .action-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 20px;
-  border: 1px solid var(--loreal-red);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.95);
+  padding: 14px 24px;
+  border: 1px solid var(--loreal-black);
+  border-radius: 24px;
+  background: var(--loreal-white);
   color: var(--loreal-black);
-  font-size: 14px;
-  font-weight: 400;
-  font-family: "Helvetica", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .action-btn .material-icons {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .action-btn:hover {
-  background: var(--loreal-red);
+  background: var(--loreal-black);
   color: var(--loreal-white);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(237, 28, 36, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .action-btn:active {
@@ -367,14 +375,14 @@ body {
 
 .action-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 /* —— ANIMATIONS —— */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -385,7 +393,7 @@ body {
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
@@ -399,7 +407,7 @@ body {
     opacity: 1;
   }
   50% {
-    opacity: 0.6;
+    opacity: 0.7;
   }
 }
 
@@ -410,11 +418,11 @@ body {
 }
 
 .typing-indicator span {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--loreal-red);
-  animation: pulse 1.4s infinite;
+  background: var(--loreal-gold);
+  animation: pulse 1.6s infinite;
 }
 
 .typing-indicator span:nth-child(2) {
@@ -427,36 +435,39 @@ body {
 
 /* —— FOOTER —— */
 .site-footer {
-  margin: 44px 0 20px;
+  margin: 48px 0 24px;
   text-align: center;
-  font-size: 13px;
-  color: var(--loreal-text-secondary);
-  font-family: "Helvetica", sans-serif;
+  font-size: 12px;
+  color: var(--loreal-gray-dark);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
 }
 
 .site-footer p {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 300;
+  letter-spacing: 1px;
+  opacity: 0.8;
 }
 
 .site-footer nav {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 24px;
   flex-wrap: wrap;
 }
 
 .site-footer a {
-  color: var(--loreal-text-primary);
+  color: var(--loreal-black);
   text-decoration: none;
   transition: color 0.3s ease;
   font-weight: 400;
+  opacity: 0.8;
 }
 
 .site-footer a:hover {
-  color: var(--loreal-red);
+  color: var(--loreal-gold);
+  opacity: 1;
 }
 
 /* —— ACCESSIBILITY —— */
@@ -475,7 +486,7 @@ body {
 /* —— RESPONSIVE DESIGN —— */
 @media (max-width: 768px) {
   .site-title {
-    font-size: 28px;
+    font-size: 32px;
   }
 
   .tagline {
@@ -483,7 +494,7 @@ body {
   }
 
   .chatbox {
-    height: 480px;
+    height: 500px;
   }
 
   .message-bubble {
@@ -500,8 +511,8 @@ body {
   }
 
   .action-btn {
-    font-size: 13px;
-    padding: 12px 16px;
+    font-size: 12px;
+    padding: 12px 18px;
   }
 }
 
@@ -511,22 +522,22 @@ body {
   }
 
   .site-title {
-    font-size: 24px;
+    font-size: 26px;
   }
 
   .chatbox {
-    height: 400px;
+    height: 420px;
   }
 
   .message-bubble {
     max-width: 92%;
     font-size: 14px;
-    padding: 14px 18px;
+    padding: 16px 20px;
   }
 
   .chat-form {
-    gap: 10px;
-    padding: 16px;
+    gap: 12px;
+    padding: 20px;
   }
 
   .send-btn {
@@ -539,7 +550,7 @@ body {
   }
 
   .action-btn {
-    font-size: 12px;
-    padding: 10px 14px;
+    font-size: 11px;
+    padding: 10px 16px;
   }
 }

@@ -33,9 +33,9 @@ let questionCount = 0;
 
 function initializeChatbot() {
   const welcomeMessage =
-    "👋 Hello! I'm your L'Oréal Beauty Advisor. Ask me about our products, skincare routines, or beauty tips. How can I help you today?";
+    "Welcome to your personal beauty consultation. I'm here to guide you through L'Oréal's finest products and expert beauty advice. What brings you here today?";
   displayMessage(welcomeMessage, "assistant");
-  console.log("✅ Chatbot initialized");
+  console.log("✅ Beauty Advisor initialized");
   console.log("🔗 Worker URL:", CLOUDFLARE_WORKER_URL);
 }
 
@@ -89,7 +89,7 @@ chatForm.addEventListener("submit", async (e) => {
   } catch (error) {
     removeTypingIndicator();
 
-    const errorMessage = `❌ Error: ${error.message}`;
+    const errorMessage = `I apologize, but I'm currently experiencing a technical difficulty. Please try again in a moment.`;
     displayMessage(errorMessage, "assistant");
 
     console.error("❌ Chat error:", error);
@@ -107,7 +107,7 @@ async function sendMessageToOpenAI(userMessage) {
   const systemMessage = {
     role: "system",
     content:
-      "You are a helpful L'Oréal beauty expert. Provide personalized recommendations about skincare, makeup, haircare, and beauty routines. Be friendly and enthusiastic about our products.",
+      "You are L'Oréal's premier beauty consultant, providing sophisticated, personalized beauty advice. Speak with elegance and expertise about our luxury products, advanced skincare routines, and professional beauty recommendations. Use refined language and focus on premium, aspirational beauty experiences.",
   };
 
   const messages = [systemMessage, ...conversationHistory];
@@ -272,33 +272,33 @@ clearBtn.addEventListener("click", () => {
   initializeChatbot();
   latestQuestionSection.style.display = "none";
   questionCount = 0;
-  alert("✅ Chat history cleared!");
+  alert("Conversation history has been cleared. Ready for a fresh consultation.");
   console.log("🗑️ History cleared");
 });
 
 helpBtn.addEventListener("click", () => {
   const helpMessage = `
-❓ HELP & TIPS
+ASSISTANCE & GUIDANCE
 
-📝 How to use:
-• Enter your name (optional) for personalized responses
-• Ask questions about skincare, makeup, or beauty routines
-• Your conversation history is saved for context
+How to engage with your beauty consultant:
+• Share your name for a personalized beauty consultation experience
+• Inquire about skincare routines, makeup recommendations, or beauty expertise
+• Your conversation history is preserved for continuity
 
-💡 Example questions:
-• What's the best skincare routine for oily skin?
-• Recommend a foundation for sensitive skin
-• How do I apply makeup for an event?
-• What haircare products do you recommend?
+Suggested inquiries:
+• What skincare regimen would you recommend for mature skin?
+• Which foundation complements warm undertones?
+• How should I prepare my skin for a special occasion?
+• What haircare solutions address volume concerns?
 
-🎯 Features:
-• Message bubbles show your conversation flow
-• Latest question highlight at the top
-• Timestamps on every message
-• Reset to clear display (keeps history)
-• Clear History to start completely fresh
+Available features:
+• Elegant message display with conversation flow
+• Current inquiry highlighted above
+• Timestamps for reference
+• Reset display option (preserves conversation context)
+• Clear history for a fresh consultation start
 
-Good luck exploring L'Oréal beauty! ✨
+Discover the art of L'Oréal beauty.
   `;
 
   displayMessage(helpMessage, "assistant");
@@ -306,7 +306,7 @@ Good luck exploring L'Oréal beauty! ✨
 
 function showChallengeUnlock() {
   const challengeMessage =
-    "🎉 Congratulations! You've unlocked a special tip: L'Oréal's #1 bestselling skincare line combines science with luxury. Check out our Revitalift collection! ✨";
+    "Congratulations on your engagement! As a token of appreciation, I'd like to introduce you to L'Oréal's most beloved skincare collection. Discover the transformative power of our Revitalift range.";
   displayMessage(challengeMessage, "assistant");
 }
 
